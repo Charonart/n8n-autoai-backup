@@ -1,0 +1,690 @@
+{
+  "createdAt": "2025-07-29T21:19:28.725Z",
+  "updatedAt": "2025-08-08T03:56:53.000Z",
+  "id": "ZdXemKNF816cg3bu",
+  "name": "My workflow 2",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "On clicking 'execute'",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        1600,
+        544
+      ],
+      "typeVersion": 1,
+      "id": "1d50ca3d-96d9-43c0-9d60-c8a8cde71f11"
+    },
+    {
+      "parameters": {
+        "command": "npx n8n export:workflow --backup --output n8n/workflows/ --pretty"
+      },
+      "name": "Export Workflows",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [
+        528,
+        112
+      ],
+      "typeVersion": 1,
+      "id": "5d55c2bb-fee7-4b7d-b7c0-cd0becc81700"
+    },
+    {
+      "parameters": {
+        "command": "npx n8n export:credentials --backup --output n8n/credentials/"
+      },
+      "name": "Export Credentials",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [
+        752,
+        112
+      ],
+      "typeVersion": 1,
+      "id": "c45ec008-14da-44c4-adc1-b2b08b642ba5"
+    },
+    {
+      "parameters": {
+        "command": "git -C n8n add ."
+      },
+      "name": "git add",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [
+        1376,
+        112
+      ],
+      "typeVersion": 1,
+      "id": "d6517bdf-8f1c-4c2b-8b16-a0f554aa15ec"
+    },
+    {
+      "parameters": {
+        "command": "=git -C n8n commit -m \"Auto backup ({{ new Date().toISOString() }})\""
+      },
+      "name": "git commit",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [
+        1600,
+        112
+      ],
+      "typeVersion": 1,
+      "id": "f7082428-2ff2-469d-9121-b422b776d675"
+    },
+    {
+      "parameters": {
+        "command": "git -C n8n push --set-upstream origin main"
+      },
+      "name": "git push",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [
+        1792,
+        112
+      ],
+      "typeVersion": 1,
+      "id": "848e1e30-3e72-4aa1-8756-0f28a61aec14"
+    },
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "hour": 0
+            },
+            {
+              "hour": 12
+            },
+            {
+              "hour": 6
+            },
+            {
+              "hour": 18
+            }
+          ]
+        }
+      },
+      "name": "Cron",
+      "type": "n8n-nodes-base.cron",
+      "position": [
+        0,
+        0
+      ],
+      "typeVersion": 1,
+      "id": "2e6179c8-b706-4fed-9a98-cdee8c64f93a"
+    },
+    {
+      "parameters": {
+        "command": "rm -f /home/node/n8n/workflows/*.json"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        2000,
+        112
+      ],
+      "id": "c241abc2-8b05-49fe-860c-e3fa9834895f",
+      "name": "remove workflow"
+    },
+    {
+      "parameters": {
+        "command": "git config --global user.name \\\"Charonart\\\" && git config --global user.email \\\"lequy27102006@gmail.com\\\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        320,
+        80
+      ],
+      "id": "01f8fb6e-02b7-4519-a267-539a26276ede",
+      "name": "Execute Command"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6cf546c5-5737-4dbd-851b-17d68e0a3780",
+              "name": "repo.owner",
+              "type": "string",
+              "value": "Charonart"
+            },
+            {
+              "id": "452efa28-2dc6-4ea3-a7a2-c35d100d0382",
+              "name": "repo.name",
+              "type": "string",
+              "value": "n8n"
+            },
+            {
+              "id": "81c4dc54-86bf-4432-a23f-22c7ea831e74",
+              "name": "repo.path",
+              "type": "string",
+              "value": "credentials"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "568c00bd-5b8f-473a-8c2a-405faf45b6ea",
+      "name": "Globals",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        2832,
+        704
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "content": "## Edit this node 👇\nrepo.owner = id github count\nrepo.name = github repo name",
+        "height": 100,
+        "width": 270,
+        "color": 4
+      },
+      "id": "d16b8085-4e19-4bf3-9b66-93926af2c0c0",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2640,
+        592
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "=https://api.github.com/repos/{{ $json.repo.owner }}/{{ $json.repo.name }}/contents/{{ $json.repo.path }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "githubApi",
+        "options": {}
+      },
+      "id": "cdc58c8b-949a-4050-88d9-0384fd9d7674",
+      "name": "Get all files in given path",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        3040,
+        704
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "path",
+        "options": {}
+      },
+      "id": "f220ad39-7422-42f7-9a14-b8b66bb0f721",
+      "name": "Split the result",
+      "type": "n8n-nodes-base.splitOut",
+      "position": [
+        2592,
+        928
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "value": "={{ $('Globals').item.json.repo.owner }}",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "={{ $('Globals').item.json.repo.name }}",
+          "mode": "name"
+        },
+        "filePath": "={{ $('Get all files in given path').item.json.path }}",
+        "additionalParameters": {}
+      },
+      "id": "c4ffaf38-afcf-4288-9938-30e23ce18467",
+      "name": "Get file content from GitHub",
+      "type": "n8n-nodes-base.github",
+      "position": [
+        2832,
+        928
+      ],
+      "typeVersion": 1,
+      "alwaysOutputData": true,
+      "webhookId": "5728564b-f59a-490c-b6f1-7f4be50f0e12"
+    },
+    {
+      "parameters": {
+        "operation": "fromJson",
+        "options": {}
+      },
+      "id": "6f9d7c01-58d9-4c7f-9295-020e6e396f5d",
+      "name": "Convert files to JSON",
+      "type": "n8n-nodes-base.extractFromFile",
+      "position": [
+        3040,
+        928
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "resource": "credential",
+        "name": "={{ $json.data.name }}",
+        "credentialTypeName": "={{ $json.data.type }}",
+        "data": "={{ JSON.stringify($json.data.data) }}",
+        "requestOptions": {}
+      },
+      "id": "c3ab16c6-aa1b-4e9d-98d0-39b6f208b73d",
+      "name": "Restore n8n Credentials",
+      "type": "n8n-nodes-base.n8n",
+      "position": [
+        2864,
+        1200
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "ad031296-4ac0-4087-bc35-7975a2cc25e6",
+              "operator": {
+                "type": "object",
+                "operation": "empty",
+                "singleValue": true
+              },
+              "leftValue": "={{ $json.data }}",
+              "rightValue": ""
+            },
+            {
+              "id": "ca912a57-6a4b-4b9a-be0e-37b69d3e4917",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              },
+              "leftValue": "={{ $json.data.name }}",
+              "rightValue": "n8n account"
+            },
+            {
+              "id": "f7c08cc3-e796-4451-8b63-cf8fa8a7b530",
+              "leftValue": "={{ $json.data.name }}",
+              "rightValue": "GitHub account",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "d9678c89-14cf-436d-80d5-59dcad0754be",
+      "name": "Check for skipped Credentials",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        2592,
+        1184
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "content": "https://www.youtube.com/channel/UCIhrU-hkXylBKX8MRaN_2iA/\nBase on bangank36's & agentstudio's work",
+        "height": 80,
+        "width": 320,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2992,
+        1392
+      ],
+      "id": "626865cb-5b75-4cf2-b706-171611ddb669",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "# KHÔI PHỤC CREDENTIALS TỪ GITHUB",
+        "height": 80,
+        "width": 680
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2544,
+        400
+      ],
+      "id": "ad4043a7-ff43-443e-b978-5b1f4252f15a",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "command": "sh /home/node/rename-workflow-files.sh"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1168,
+        112
+      ],
+      "id": "04536b84-d17e-4678-8e4d-ef7762bbb937",
+      "name": "rename workflow"
+    },
+    {
+      "parameters": {
+        "command": "cat > rename-workflow-files.sh << 'EOF'\n#!/bin/sh\n\nWORKFLOW_DIR=\"/home/node/n8n/workflows\"\n\ncd \"$WORKFLOW_DIR\" || exit 1\n\n# Check if jq exists\nif ! command -v jq > /dev/null 2>&1; then\n  echo \"jq not found, installing...\"\n  apt update && apt install -y jq\nfi\n\n# Rename files using workflow name\nfor file in *.json; do\n  name=$(jq -r '.name' \"$file\")\n  safe_name=$(echo \"$name\" | tr -cd '[:alnum:]-_ ' | tr ' ' '_')\n  mv \"$file\" \"${safe_name}.json\"\ndone\n\necho \" Rename completed.\"\nEOF\n\nchmod +x rename-workflow-files.sh"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        960,
+        112
+      ],
+      "id": "97b0d54c-fcc8-436b-a510-029c3bfad320",
+      "name": "Execute Command1"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        192,
+        624
+      ],
+      "id": "fa2599da-0a1f-43a4-840e-4b233c87f98a",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "command": "rm -f /home/node/n8n/workflows/*.json"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        400,
+        624
+      ],
+      "id": "ef1325d9-6e32-4de3-86b2-7ede46f2d7a6",
+      "name": "Execute Command2"
+    },
+    {
+      "parameters": {
+        "command": "npx n8n export:workflow --backup --output /home/node/n8n/workflows/ --pretty && npx n8n export:credentials --backup --output /home/node/n8n/credentials/ --pretty"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        608,
+        624
+      ],
+      "id": "926f0453-0c2f-469c-839e-614b2d1050c5",
+      "name": "Execute Command3"
+    },
+    {
+      "parameters": {
+        "command": "sh /home/node/rename-workflow-files.sh"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        816,
+        624
+      ],
+      "id": "001beb1d-64a8-4448-b28c-ed7aada16aba",
+      "name": "Execute Command4"
+    },
+    {
+      "parameters": {
+        "command": "cd /home/node/n8n && git add . && git commit -m \"Auto backup\" && git push origin main"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1024,
+        624
+      ],
+      "id": "d16861f0-ada9-4347-8948-7aeac8c89e2c",
+      "name": "Execute Command5"
+    }
+  ],
+  "connections": {
+    "git add": {
+      "main": [
+        [
+          {
+            "node": "git commit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "git commit": {
+      "main": [
+        [
+          {
+            "node": "git push",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Export Workflows": {
+      "main": [
+        [
+          {
+            "node": "Export Credentials",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Export Credentials": {
+      "main": [
+        [
+          {
+            "node": "Execute Command1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On clicking 'execute'": {
+      "main": [
+        [
+          {
+            "node": "Globals",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "git push": {
+      "main": [
+        [
+          {
+            "node": "remove workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Command": {
+      "main": [
+        [
+          {
+            "node": "Export Workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Globals": {
+      "main": [
+        [
+          {
+            "node": "Get all files in given path",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split the result": {
+      "main": [
+        [
+          {
+            "node": "Get file content from GitHub",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert files to JSON": {
+      "main": [
+        [
+          {
+            "node": "Check for skipped Credentials",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get all files in given path": {
+      "main": [
+        [
+          {
+            "node": "Split the result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get file content from GitHub": {
+      "main": [
+        [
+          {
+            "node": "Convert files to JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check for skipped Credentials": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Restore n8n Credentials",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cron": {
+      "main": [
+        [
+          {
+            "node": "Execute Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "rename workflow": {
+      "main": [
+        [
+          {
+            "node": "git add",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Command1": {
+      "main": [
+        [
+          {
+            "node": "rename workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Execute Command2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Command2": {
+      "main": [
+        [
+          {
+            "node": "Execute Command3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Command3": {
+      "main": [
+        [
+          {
+            "node": "Execute Command4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Command4": {
+      "main": [
+        [
+          {
+            "node": "Execute Command5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "c442ea2a-32e7-4b5e-82b0-7d7ac8e1e8a1",
+  "triggerCount": 0,
+  "tags": []
+}
